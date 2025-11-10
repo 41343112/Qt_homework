@@ -73,8 +73,8 @@ void Dialog::operatorPressed()
     QString clickedOperator = button->text();
     double operand = ui->display->text().toDouble();
     
-    if (!pendingOperator.isEmpty()) {
-        // Calculate the pending operation
+    if (!pendingOperator.isEmpty() && !waitingForOperand) {
+        // Calculate the pending operation only if a new operand was entered
         if (pendingOperator == "+") {
             firstNum += operand;
         } else if (pendingOperator == "-") {
@@ -92,9 +92,15 @@ void Dialog::operatorPressed()
                 return;
             }
         }
-        ui->display->setText(QString::number(firstNum));
+        ui->display->setText(QString::number(firstNum) + " " + clickedOperator);
+    } else if (waitingForOperand) {
+        // If we're waiting for operand (operator pressed immediately after another operator),
+        // just replace the operator
+        ui->display->setText(QString::number(firstNum) + " " + clickedOperator);
     } else {
+        // First operator pressed
         firstNum = operand;
+        ui->display->setText(QString::number(firstNum) + " " + clickedOperator);
     }
     
     pendingOperator = clickedOperator;
