@@ -17,7 +17,18 @@ public:
     Dialog(QWidget *parent = nullptr);
     ~Dialog();
 
+private slots:
+    void digitPressed();
+    void operatorPressed();
+    void equalsPressed();
+    void clearPressed();
+    void deletePressed();
+    void decimalPressed();
+
 private:
     Ui::Dialog *ui;
+    double firstNum;
+    bool waitingForOperand;
+    QString pendingOperator;
 };
 #endif // DIALOG_H
