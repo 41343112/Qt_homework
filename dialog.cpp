@@ -79,9 +79,9 @@ void Dialog::operatorPressed()
             firstNum += operand;
         } else if (pendingOperator == "-") {
             firstNum -= operand;
-        } else if (pendingOperator == "×") {
+        } else if (pendingOperator == "*") {
             firstNum *= operand;
-        } else if (pendingOperator == "÷") {
+        } else if (pendingOperator == "/") {
             if (operand != 0.0) {
                 firstNum /= operand;
             } else {
@@ -110,9 +110,9 @@ void Dialog::equalsPressed()
             firstNum += operand;
         } else if (pendingOperator == "-") {
             firstNum -= operand;
-        } else if (pendingOperator == "×") {
+        } else if (pendingOperator == "*") {
             firstNum *= operand;
-        } else if (pendingOperator == "÷") {
+        } else if (pendingOperator == "/") {
             if (operand != 0.0) {
                 firstNum /= operand;
             } else {
