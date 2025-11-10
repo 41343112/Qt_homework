@@ -66,11 +66,7 @@ void Dialog::digitPressed()
     }
     
     // Update the expression display
-    if (currentExpression.isEmpty() || currentExpression.endsWith(" ")) {
-        currentExpression += digit;
-    } else {
-        currentExpression += digit;
-    }
+    currentExpression += digit;
     ui->formulaDisplay->setText(currentExpression);
 }
 
