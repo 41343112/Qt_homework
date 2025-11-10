@@ -8,6 +8,7 @@ Dialog::Dialog(QWidget *parent)
     , firstNum(0.0)
     , waitingForOperand(true)
     , pendingOperator("")
+    , currentExpression("")
 {
     ui->setupUi(this);
     
@@ -37,6 +38,7 @@ Dialog::Dialog(QWidget *parent)
     
     // Initialize display
     ui->display->setText("0");
+    ui->formulaDisplay->clear();
 }
 
 Dialog::~Dialog()
@@ -62,6 +64,14 @@ void Dialog::digitPressed()
     } else if (ui->display->text() != "0") {
         ui->display->setText(ui->display->text() + digit);
     }
+    
+    // Update the expression display
+    if (currentExpression.isEmpty() || currentExpression.endsWith(" ")) {
+        currentExpression += digit;
+    } else {
+        currentExpression += digit;
+    }
+    ui->formulaDisplay->setText(currentExpression);
 }
 
 void Dialog::operatorPressed()
@@ -86,22 +96,36 @@ void Dialog::operatorPressed()
                 firstNum /= operand;
             } else {
                 ui->display->setText("Error");
+                ui->formulaDisplay->setText("Error: Division by zero");
                 firstNum = 0.0;
                 waitingForOperand = true;
                 pendingOperator.clear();
+                currentExpression.clear();
                 return;
             }
         }
-        ui->display->setText(QString::number(firstNum) + " " + clickedOperator);
+        ui->display->setText(QString::number(firstNum));
     } else if (waitingForOperand) {
         // If we're waiting for operand (operator pressed immediately after another operator),
-        // just replace the operator
-        ui->display->setText(QString::number(firstNum) + " " + clickedOperator);
+        // just replace the operator in the expression
+        if (!currentExpression.isEmpty() && currentExpression.endsWith(" ")) {
+            // Remove the last operator and space
+            currentExpression.chop(2);
+        }
     } else {
         // First operator pressed
         firstNum = operand;
-        ui->display->setText(QString::number(firstNum) + " " + clickedOperator);
     }
+    
+    // Add operator to expression if not already ending with a space
+    if (!currentExpression.isEmpty() && !currentExpression.endsWith(" ")) {
+        currentExpression += " " + clickedOperator + " ";
+    } else if (!currentExpression.isEmpty()) {
+        currentExpression += clickedOperator + " ";
+    } else {
+        currentExpression = QString::number(firstNum) + " " + clickedOperator + " ";
+    }
+    ui->formulaDisplay->setText(currentExpression);
     
     pendingOperator = clickedOperator;
     waitingForOperand = true;
@@ -112,6 +136,14 @@ void Dialog::equalsPressed()
     double operand = ui->display->text().toDouble();
     
     if (!pendingOperator.isEmpty()) {
+        // Complete the expression with the last operand
+        if (!currentExpression.endsWith(" ")) {
+            // Expression already has the second operand
+        } else {
+            // Add the second operand to the expression
+            currentExpression += QString::number(operand);
+        }
+        
         if (pendingOperator == "+") {
             firstNum += operand;
         } else if (pendingOperator == "-") {
@@ -123,12 +155,18 @@ void Dialog::equalsPressed()
                 firstNum /= operand;
             } else {
                 ui->display->setText("Error");
+                ui->formulaDisplay->setText("Error: Division by zero");
                 firstNum = 0.0;
                 waitingForOperand = true;
                 pendingOperator.clear();
+                currentExpression.clear();
                 return;
             }
         }
+        
+        // Show the complete expression in the formula display
+        ui->formulaDisplay->setText(currentExpression);
+        // Show the result in the main display
         ui->display->setText(QString::number(firstNum));
         pendingOperator.clear();
     }
@@ -139,9 +177,11 @@ void Dialog::equalsPressed()
 void Dialog::clearPressed()
 {
     ui->display->setText("0");
+    ui->formulaDisplay->clear();
     firstNum = 0.0;
     waitingForOperand = true;
     pendingOperator.clear();
+    currentExpression.clear();
 }
 
 void Dialog::deletePressed()
@@ -150,6 +190,11 @@ void Dialog::deletePressed()
     if (text.length() > 1) {
         text.chop(1);
         ui->display->setText(text);
+        // Update the expression by removing the last character
+        if (!currentExpression.isEmpty()) {
+            currentExpression.chop(1);
+            ui->formulaDisplay->setText(currentExpression);
+        }
     } else {
         ui->display->setText("0");
         waitingForOperand = true;
@@ -161,7 +206,10 @@ void Dialog::decimalPressed()
     if (waitingForOperand) {
         ui->display->setText("0.");
         waitingForOperand = false;
+        currentExpression += "0.";
     } else if (!ui->display->text().contains(".")) {
         ui->display->setText(ui->display->text() + ".");
+        currentExpression += ".";
     }
+    ui->formulaDisplay->setText(currentExpression);
 }

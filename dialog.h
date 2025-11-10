@@ -30,5 +30,6 @@ private:
     double firstNum;
     bool waitingForOperand;
     QString pendingOperator;
+    QString currentExpression;
 };
 #endif // DIALOG_H
