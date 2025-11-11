@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QVector>
 
 class Dialog : public QDialog
 {
@@ -24,6 +25,7 @@ private slots:
 
 private:
     void createUI();
+    double evaluateExpression();
     
     QLabel *formulaDisplay;
     QLineEdit *display;
@@ -46,9 +48,10 @@ private:
     QPushButton *btnDelete;
     QPushButton *btnDecimal;
     
-    double firstNum;
+    // Expression storage
+    QVector<double> operands;
+    QVector<QString> operators;
     bool waitingForOperand;
-    QString pendingOperator;
     QString currentExpression;
     
     // For repeating equals operation

@@ -10,6 +10,7 @@ A simple calculator application built with Qt that provides basic arithmetic ope
 ### Features
 
 - **Basic Operations**: Addition (+), Subtraction (-), Multiplication (×), Division (÷)
+- **Order of Operations**: Follows mathematical precedence rules (multiplication and division before addition and subtraction)
 - **Digit Input**: Numbers 0-9
 - **Decimal Support**: Floating point calculations
 - **Clear Function**: Reset calculator to initial state
@@ -46,6 +47,23 @@ make
 6. Click C to clear and start over
 7. Click DEL to delete the last digit
 8. Click . to add a decimal point
+
+### Order of Operations
+
+This calculator follows standard mathematical order of operations (also known as operator precedence):
+
+1. **Multiplication (×) and Division (÷)** are evaluated first, from left to right
+2. **Addition (+) and Subtraction (-)** are evaluated next, from left to right
+
+**Examples:**
+- `2 + 3 × 4 =` → Result: **14** (not 20)
+  - Calculation: 3 × 4 = 12, then 2 + 12 = 14
+- `10 - 2 × 3 =` → Result: **4** (not 24)
+  - Calculation: 2 × 3 = 6, then 10 - 6 = 4
+- `20 ÷ 4 + 2 =` → Result: **7** (not 3.33)
+  - Calculation: 20 ÷ 4 = 5, then 5 + 2 = 7
+- `2 + 3 × 4 + 5 =` → Result: **19**
+  - Calculation: 3 × 4 = 12, then 2 + 12 + 5 = 19
 
 ### Windows Calculator Behavior
 
