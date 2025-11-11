@@ -22,6 +22,9 @@ private slots:
     void clearPressed();
     void deletePressed();
     void decimalPressed();
+    void scientificFunctionPressed();
+    void constantPressed();
+    void parenthesisPressed();
 
 private:
     void createUI();
@@ -47,6 +50,24 @@ private:
     QPushButton *btnClear;
     QPushButton *btnDelete;
     QPushButton *btnDecimal;
+    
+    // Scientific function buttons
+    QPushButton *btnSin;
+    QPushButton *btnCos;
+    QPushButton *btnTan;
+    QPushButton *btnLog;
+    QPushButton *btnLn;
+    QPushButton *btnSqrt;
+    QPushButton *btnSquare;
+    QPushButton *btnPower;
+    QPushButton *btnPi;
+    QPushButton *btnE;
+    QPushButton *btnLeftParen;
+    QPushButton *btnRightParen;
+    QPushButton *btnExp;
+    QPushButton *btnMod;
+    QPushButton *btnFactorial;
+    QPushButton *btnAbs;
     
     // Expression storage
     QVector<double> operands;
