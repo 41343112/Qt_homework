@@ -72,6 +72,8 @@ CMakeLists.txt.user*
 # --------
 *.dll
 *.exe
+Qt_homework
+moc_predefs.h
 
 # Directories with generated files
 .moc/

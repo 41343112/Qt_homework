@@ -9,6 +9,9 @@ Dialog::Dialog(QWidget *parent)
     , waitingForOperand(true)
     , pendingOperator("")
     , currentExpression("")
+    , lastOperand(0.0)
+    , lastOperator("")
+    , equalsPressedBefore(false)
 {
     createUI();
     
@@ -184,6 +187,15 @@ void Dialog::digitPressed()
     
     QString digit = button->text();
     
+    // If equals was just pressed, start a new calculation
+    if (equalsPressedBefore) {
+        display->clear();
+        formulaDisplay->clear();
+        currentExpression.clear();
+        equalsPressedBefore = false;
+        waitingForOperand = false;
+    }
+    
     if (waitingForOperand) {
         display->clear();
         waitingForOperand = false;
@@ -209,6 +221,12 @@ void Dialog::operatorPressed()
     QString clickedOperator = button->text();
     double operand = display->text().toDouble();
     
+    // If equals was just pressed, continue from the result
+    if (equalsPressedBefore) {
+        equalsPressedBefore = false;
+        currentExpression = QString::number(operand);
+    }
+    
     if (!pendingOperator.isEmpty() && !waitingForOperand) {
         // Calculate the pending operation only if a new operand was entered
         if (pendingOperator == "+") {
@@ -227,6 +245,7 @@ void Dialog::operatorPressed()
                 waitingForOperand = true;
                 pendingOperator.clear();
                 currentExpression.clear();
+                equalsPressedBefore = false;
                 return;
             }
         }
@@ -261,7 +280,42 @@ void Dialog::equalsPressed()
 {
     double operand = display->text().toDouble();
     
-    if (!pendingOperator.isEmpty()) {
+    // If equals was already pressed, repeat the last operation
+    if (equalsPressedBefore && !lastOperator.isEmpty()) {
+        // Use the result from display as the new first number
+        firstNum = display->text().toDouble();
+        operand = lastOperand;
+        
+        // Recalculate with the last operation
+        if (lastOperator == "+") {
+            firstNum += operand;
+        } else if (lastOperator == "-") {
+            firstNum -= operand;
+        } else if (lastOperator == "×") {
+            firstNum *= operand;
+        } else if (lastOperator == "÷") {
+            if (operand != 0.0) {
+                firstNum /= operand;
+            } else {
+                display->setText("Error");
+                formulaDisplay->setText("Error: Division by zero");
+                firstNum = 0.0;
+                waitingForOperand = true;
+                pendingOperator.clear();
+                currentExpression.clear();
+                equalsPressedBefore = false;
+                return;
+            }
+        }
+        
+        // Update displays
+        currentExpression = QString::number(display->text().toDouble()) + " " + lastOperator + " " + QString::number(lastOperand);
+        formulaDisplay->setText(currentExpression);
+        display->setText(QString::number(firstNum));
+        
+    } else if (!pendingOperator.isEmpty()) {
+        // First time pressing equals - complete the pending operation
+        
         // Complete the expression with the last operand
         if (!currentExpression.endsWith(" ")) {
             // Expression already has the second operand
@@ -269,6 +323,10 @@ void Dialog::equalsPressed()
             // Add the second operand to the expression
             currentExpression += QString::number(operand);
         }
+        
+        // Save the operator and operand for repeating
+        lastOperator = pendingOperator;
+        lastOperand = operand;
         
         if (pendingOperator == "+") {
             firstNum += operand;
@@ -286,6 +344,7 @@ void Dialog::equalsPressed()
                 waitingForOperand = true;
                 pendingOperator.clear();
                 currentExpression.clear();
+                equalsPressedBefore = false;
                 return;
             }
         }
@@ -295,6 +354,7 @@ void Dialog::equalsPressed()
         // Show the result in the main display
         display->setText(QString::number(firstNum));
         pendingOperator.clear();
+        equalsPressedBefore = true;
     }
     
     waitingForOperand = true;
@@ -308,6 +368,9 @@ void Dialog::clearPressed()
     waitingForOperand = true;
     pendingOperator.clear();
     currentExpression.clear();
+    lastOperand = 0.0;
+    lastOperator.clear();
+    equalsPressedBefore = false;
 }
 
 void Dialog::deletePressed()
@@ -329,7 +392,14 @@ void Dialog::deletePressed()
 
 void Dialog::decimalPressed()
 {
-    if (waitingForOperand) {
+    // If equals was just pressed, start a new calculation
+    if (equalsPressedBefore) {
+        display->setText("0.");
+        formulaDisplay->clear();
+        currentExpression = "0.";
+        equalsPressedBefore = false;
+        waitingForOperand = false;
+    } else if (waitingForOperand) {
         display->setText("0.");
         waitingForOperand = false;
         currentExpression += "0.";
