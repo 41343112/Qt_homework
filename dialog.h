@@ -2,12 +2,9 @@
 #define DIALOG_H
 
 #include <QDialog>
-
-QT_BEGIN_NAMESPACE
-namespace Ui {
-class Dialog;
-}
-QT_END_NAMESPACE
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
 
 class Dialog : public QDialog
 {
@@ -26,7 +23,29 @@ private slots:
     void decimalPressed();
 
 private:
-    Ui::Dialog *ui;
+    void createUI();
+    
+    QLabel *formulaDisplay;
+    QLineEdit *display;
+    QPushButton *btn0;
+    QPushButton *btn1;
+    QPushButton *btn2;
+    QPushButton *btn3;
+    QPushButton *btn4;
+    QPushButton *btn5;
+    QPushButton *btn6;
+    QPushButton *btn7;
+    QPushButton *btn8;
+    QPushButton *btn9;
+    QPushButton *btnAdd;
+    QPushButton *btnSubtract;
+    QPushButton *btnMultiply;
+    QPushButton *btnDivide;
+    QPushButton *btnEquals;
+    QPushButton *btnClear;
+    QPushButton *btnDelete;
+    QPushButton *btnDecimal;
+    
     double firstNum;
     bool waitingForOperand;
     QString pendingOperator;
