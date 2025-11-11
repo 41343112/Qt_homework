@@ -2,7 +2,7 @@
 
 ## Calculator Application
 
-A simple calculator application built with Qt that provides basic arithmetic operations.
+A simple calculator application built with Qt that provides basic arithmetic operations. The UI is created **entirely programmatically** without using Qt Designer (.ui files).
 
 ### Features
 
@@ -12,6 +12,7 @@ A simple calculator application built with Qt that provides basic arithmetic ope
 - **Clear Function**: Reset calculator to initial state
 - **Delete Function**: Remove last entered digit
 - **Error Handling**: Division by zero protection
+- **Programmatic UI**: All widgets and layouts created in C++ code, no UI designer files
 
 ### UI Layout
 
