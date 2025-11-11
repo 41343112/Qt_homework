@@ -50,5 +50,10 @@ private:
     bool waitingForOperand;
     QString pendingOperator;
     QString currentExpression;
+    
+    // For repeating equals operation
+    double lastOperand;
+    QString lastOperator;
+    bool equalsPressedBefore;
 };
 #endif // DIALOG_H
